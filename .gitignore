@@ -1,0 +1,6 @@
+config.py
+.vscode
+__pycache__
+bot_scripts/__pycache__
+test.py
+debug.log
