@@ -24,7 +24,6 @@ class Twitter:
             exit()
 
     def login_to_twitter(self):
-        # Selenium
         options = Options()
         options.headless = False
         options.add_argument('--log-level=3')
@@ -89,30 +88,33 @@ class Twitter:
             follow_btn = self.chrome.find_element_by_css_selector('div.content.clearfix > div > div.follow-bar > div > span > button.EdgeButton.EdgeButton--secondary.EdgeButton--medium.button-text.follow-text')
             follow_btn.click()
 
-
-    def save_to_csv(self, username):
+    def save_to_csv(self, username, user_id):
         with open(self.variables['FOLLOWS_CSV'], 'a') as f:
             print('[Twitter] Adding ' + username + ' to database.')
             link = 'https://twitter.com/' + username
-            data = ', '.join([username, link, 'true'])
+            data = ', '.join([username, user_id, link, 'true', 'false'])
             f.write(data + '\n')
 
     def submit(self):
         webdriver.ActionChains(self.chrome).send_keys(Keys.CONTROL, Keys.RETURN, Keys.CONTROL).perform()
 
-
-    def reply_to_tweets(self, tweets):
-        print('[Twitter] Replying to tweets')
-        tweets_data = []
-
+    def extract_data(self, tweets):
+        data = []
         for tweet in tweets:
             username = tweet.get_attribute('data-screen-name')
             tweet_id = tweet.get_attribute('data-tweet-id')
-            tweets_data.append((username, tweet_id))
+            user_id = tweet.get_attribute('data-user-id')
+            data.append((username, tweet_id, user_id))
+        return data
+
+    def reply_to_tweets(self, tweets):
+        print('[Twitter] Replying to tweets')
+        tweets_data = self.extract_data(tweets)
 
         for tweet in tweets_data:
             username = tweet[0]
             tweet_id = tweet[1]
+            user_id = tweet[2]
             print('[Twitter] Replying to ' + username + '\'s tweet' )
             self.chrome.get(f'https://twitter.com/{username}/status/{tweet_id}')
             time.sleep(3)
@@ -121,7 +123,7 @@ class Twitter:
 
             if not self.is_followed(tweet):
                 self.follow(username)
-                self.save_to_csv(username)
+                self.save_to_csv(username, user_id)
 
             if self.already_replied():
                 continue
@@ -139,9 +141,62 @@ class Twitter:
             time.sleep(3)
 
     def reply_to_keyword(self, keyword, n):
-        self.login_to_twitter()
         self.search(keyword)
         tweets = self.get_tweets(n)
         self.reply_to_tweets(tweets)
 
+    def get_data_from_csv(self, csv_filename):
+        with open(csv_filename, 'r') as f:
+            reader = csv.DictReader(f)
+            data = []
+            for row in reader:
+                print(dict(row))
+                data.append(dict(row))
+        return data
+    
+    def update_messaged_field(self, new_data):
+        fieldnames = ['username', 'user_id', 'link', 'followed', 'messaged']
 
+        with open(self.variables['FOLLOWS_CSV'], 'r') as old:
+            old_data = csv.DictReader(old)
+        
+        print(old_data)
+        with open(self.variables['FOLLOWS_CSV'], 'w') as new:
+            csvwriter = csv.DictWriter(new, fieldnames=fieldnames)
+            for row in old_data:
+                if row['username'] == new_data['username']:
+                    print('[Twitter] Updating messaged field for ' + new_data['username'])
+                    csvwriter.writerow(new_data)
+                csvwriter.writerow(row)
+
+    def message(self, user_id, username):
+        print('[Twitter] Messaging ' + username)
+        url = self.variables['DM_URL']
+        dm_text = quote_plus(self.variables['DM_TEXT'])
+        url += user_id + '&text=' + dm_text
+        
+        self.chrome.get(url)
+        time.sleep(3)
+        
+        try:
+            inp_box = self.chrome.find_element_by_class_name('DMComposer-editor')
+            inp_box.send_keys(Keys.RETURN)
+        except:
+            print('[Twitter] Cannot be messaged')
+
+    def main(self, keywords, n):
+        self.login_to_twitter()
+        
+        # print('[Twitter] Starting the keyword search and reply operation')
+        # for keyword in keywords:
+        #     self.reply_to_keyword(keyword, n)
+
+        print('[Twitter] Starting the messaging operation')
+        user_data = self.get_data_from_csv(self.variables['FOLLOWS_CSV'])
+        print(user_data)
+        for i, user in enumerate(user_data):
+            if user['messaged'] == 'false':
+                self.message(user['user_id'], user['username'])
+                user['messaged'] = 'true'
+                self.update_messaged_field(user)
+                time.sleep(3)
