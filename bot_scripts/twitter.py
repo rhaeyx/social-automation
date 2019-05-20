@@ -12,11 +12,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 
 from config import TwitterVariables
+from config import GlobalVariables
 
 class Twitter:
     def __init__(self):
+        self.globals = GlobalVariables.__dict__
         self.variables = TwitterVariables.__dict__
-        self.timeout = self.variables['TIMEOUT']
+        self.timeout = self.globals['TIMEOUT']
         self.username = self.variables['USERNAME']
         self.password = self.variables['PASSWORD']
         self.reply = self.variables['REPLY_TEXT']
@@ -29,7 +31,7 @@ class Twitter:
         options.headless = False
         options.add_argument('--log-level=3')
         options.add_argument('--silent')
-        self.chrome = webdriver.Chrome(self.variables['CHROMEDRIVER'], options=options)
+        self.chrome = webdriver.Chrome(self.globals['CHROMEDRIVER'], options=options)
         self.wait = WebDriverWait(self.chrome, self.timeout)
         
         # Open link to twitter
