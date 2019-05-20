@@ -203,5 +203,5 @@ class Twitter:
         for i, user in enumerate(user_data):
             if user['messaged'] == 'false':
                 self.message(user, i)
-                time.sleep(60)
+                time.sleep(random.randint(55, 60))
         print('[Twitter] Done')
