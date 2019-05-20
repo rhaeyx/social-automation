@@ -15,3 +15,4 @@ class TwitterVariables:
     # Constants
     LOGIN_URL = 'https://twitter.com/login'
     SEARCH_URL = 'https://twitter.com/search?q='
+    DM_URL = 'https://twitter.com/messages/compose?recipient_id='

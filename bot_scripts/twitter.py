@@ -145,35 +145,35 @@ class Twitter:
         tweets = self.get_tweets(n)
         self.reply_to_tweets(tweets)
 
-    def get_data_from_csv(self, csv_filename):
-        with open(csv_filename, 'r') as f:
+    def get_data_from_csv(self):
+        with open(self.variables['FOLLOWS_CSV'], 'r') as f:
             reader = csv.DictReader(f)
             data = []
             for row in reader:
                 print(dict(row))
                 data.append(dict(row))
+        if not data:
+            print('[Twitter] No data on csv file')
         return data
     
-    def update_messaged_field(self, new_data):
-        fieldnames = ['username', 'user_id', 'link', 'followed', 'messaged']
+    def update_csv_row(self, new_data, index):
+        new_data = list(new_data.values())
+        print(new_data, index)
 
         with open(self.variables['FOLLOWS_CSV'], 'r') as old:
-            old_data = csv.DictReader(old)
-        
-        print(old_data)
-        with open(self.variables['FOLLOWS_CSV'], 'w') as new:
-            csvwriter = csv.DictWriter(new, fieldnames=fieldnames)
-            for row in old_data:
-                if row['username'] == new_data['username']:
-                    print('[Twitter] Updating messaged field for ' + new_data['username'])
-                    csvwriter.writerow(new_data)
-                csvwriter.writerow(row)
+            csvreader = csv.reader(old)
+            lines = list(csvreader)
+            lines[index + 1] = new_data
 
-    def message(self, user_id, username):
-        print('[Twitter] Messaging ' + username)
+        with open(self.variables['FOLLOWS_CSV'], 'w', newline='') as new:
+            csvwriter = csv.writer(new)
+            csvwriter.writerows(lines)
+
+    def message(self, user, i):
+        print('[Twitter] Messaging ' + user['username'])
         url = self.variables['DM_URL']
         dm_text = quote_plus(self.variables['DM_TEXT'])
-        url += user_id + '&text=' + dm_text
+        url += user['user_id'] + '&text=' + dm_text
         
         self.chrome.get(url)
         time.sleep(3)
@@ -181,7 +181,12 @@ class Twitter:
         try:
             inp_box = self.chrome.find_element_by_class_name('DMComposer-editor')
             inp_box.send_keys(Keys.RETURN)
+            user['messaged'] = 'true'
+            self.update_csv_row(user, i)
+            print('[Twitter] Message sent')
         except:
+            user['messaged'] = 'cannot'
+            self.update_csv_row(user, i)
             print('[Twitter] Cannot be messaged')
 
     def main(self, keywords, n):
@@ -192,11 +197,9 @@ class Twitter:
         #     self.reply_to_keyword(keyword, n)
 
         print('[Twitter] Starting the messaging operation')
-        user_data = self.get_data_from_csv(self.variables['FOLLOWS_CSV'])
-        print(user_data)
+        user_data = self.get_data_from_csv()
+
         for i, user in enumerate(user_data):
             if user['messaged'] == 'false':
-                self.message(user['user_id'], user['username'])
-                user['messaged'] = 'true'
-                self.update_messaged_field(user)
+                self.message(user, i)
                 time.sleep(3)
