@@ -92,7 +92,7 @@ class Twitter:
         with open(self.variables['FOLLOWS_CSV'], 'a') as f:
             print('[Twitter] Adding ' + username + ' to database.')
             link = 'https://twitter.com/' + username
-            data = ', '.join([username, user_id, link, 'true', 'false'])
+            data = ','.join([username, user_id, link, 'true', 'false'])
             f.write(data + '\n')
 
     def submit(self):
@@ -132,7 +132,7 @@ class Twitter:
             tweet_box = self.chrome.find_element_by_id('tweet-box-reply-to-' + tweet_id)
             reply = '@' + username + ' ' + self.reply
             if len(reply) > 280:
-                print('Too many characters in reply.')
+                print('[Twitter] Too many characters in reply.')
                 continue
             tweet_box.send_keys(reply)
 
@@ -150,7 +150,6 @@ class Twitter:
             reader = csv.DictReader(f)
             data = []
             for row in reader:
-                print(dict(row))
                 data.append(dict(row))
         if not data:
             print('[Twitter] No data on csv file')
@@ -192,9 +191,9 @@ class Twitter:
     def main(self, keywords, n):
         self.login_to_twitter()
         
-        # print('[Twitter] Starting the keyword search and reply operation')
-        # for keyword in keywords:
-        #     self.reply_to_keyword(keyword, n)
+        print('[Twitter] Starting the keyword search and reply operation')
+        for keyword in keywords:
+            self.reply_to_keyword(keyword, n)
 
         print('[Twitter] Starting the messaging operation')
         user_data = self.get_data_from_csv()
@@ -203,3 +202,4 @@ class Twitter:
             if user['messaged'] == 'false':
                 self.message(user, i)
                 time.sleep(3)
+        print('[Twitter] Done')

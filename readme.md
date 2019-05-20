@@ -1,8 +1,8 @@
 # Social Automation
 
 ## Twitter
-- Search general hashtags or conference hashtags 
-- Retweet or reply to accounts that used the hashtag
+- Search general hashtags or conference hashtags //
+- Retweet or reply to accounts that used the hashtag //
 - Follow any relevant accounts //
 - Direct message the account owners //
 - Track status and time stamps of posts/messages
