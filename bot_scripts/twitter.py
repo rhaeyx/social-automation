@@ -1,6 +1,7 @@
 from urllib.parse import quote_plus
 import time
 import csv
+import random
 
 # Selenium
 from selenium import webdriver
@@ -28,7 +29,7 @@ class Twitter:
         options.headless = False
         options.add_argument('--log-level=3')
         options.add_argument('--silent')
-        self.chrome = webdriver.Chrome('../chromedriver.exe', options=options)
+        self.chrome = webdriver.Chrome(self.variables['CHROMEDRIVER'], options=options)
         self.wait = WebDriverWait(self.chrome, self.timeout)
         
         # Open link to twitter
@@ -112,12 +113,13 @@ class Twitter:
         tweets_data = self.extract_data(tweets)
 
         for tweet in tweets_data:
+            time.sleep(random.randint(55, 65))
             username = tweet[0]
             tweet_id = tweet[1]
             user_id = tweet[2]
             print('[Twitter] Replying to ' + username + '\'s tweet' )
             self.chrome.get(f'https://twitter.com/{username}/status/{tweet_id}')
-            time.sleep(3)
+            time.sleep(10)
 
             tweet = self.chrome.find_element_by_class_name('js-actionable-tweet')
 
@@ -138,7 +140,7 @@ class Twitter:
 
             self.submit()
 
-            time.sleep(3)
+            time.sleep(10)
 
     def reply_to_keyword(self, keyword, n):
         self.search(keyword)
@@ -175,7 +177,7 @@ class Twitter:
         url += user['user_id'] + '&text=' + dm_text
         
         self.chrome.get(url)
-        time.sleep(3)
+        time.sleep(5)
         
         try:
             inp_box = self.chrome.find_element_by_class_name('DMComposer-editor')
@@ -201,5 +203,5 @@ class Twitter:
         for i, user in enumerate(user_data):
             if user['messaged'] == 'false':
                 self.message(user, i)
-                time.sleep(3)
+                time.sleep(60)
         print('[Twitter] Done')
