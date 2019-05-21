@@ -8,10 +8,10 @@
 - Track status and time stamps of posts/messages
 
 ## Instagram
-- Follow any relevant accounts 
-- Direct message the account owners
-- Search general hashtags or conference hashtags
-- Reply on photos or direct message to accounts that used the hashtag
+- Follow any relevant accounts //
+- Search general hashtags or conference hashtags //
+- Reply on photos or direct message to accounts that used the hashtag //
+- Direct message the account owners  
 - Track status and time stamps of posts/messages
 
 ## Facebook
