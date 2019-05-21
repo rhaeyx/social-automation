@@ -12,11 +12,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 
 from config import TwitterVariables
+from config import GlobalVariables
 
 class Twitter:
     def __init__(self):
+        self.globals = GlobalVariables.__dict__
         self.variables = TwitterVariables.__dict__
-        self.timeout = self.variables['TIMEOUT']
+        self.timeout = self.globals['TIMEOUT']
         self.username = self.variables['USERNAME']
         self.password = self.variables['PASSWORD']
         self.reply = self.variables['REPLY_TEXT']
@@ -26,14 +28,14 @@ class Twitter:
 
     def login_to_twitter(self):
         options = Options()
-        options.headless = False
+        options.headless = self.globals['HEADLESS']
         options.add_argument('--log-level=3')
         options.add_argument('--silent')
-        self.chrome = webdriver.Chrome(self.variables['CHROMEDRIVER'], options=options)
+        self.chrome = webdriver.Chrome(self.globals['CHROMEDRIVER'], options=options)
         self.wait = WebDriverWait(self.chrome, self.timeout)
         
         # Open link to twitter
-        self.chrome.get('https://twitter.com/login')
+        self.chrome.get(self.variables['LOGIN_URL'])
 
         # Input login details
         print('[Twitter] Logging in as ' + self.username)
@@ -113,7 +115,6 @@ class Twitter:
         tweets_data = self.extract_data(tweets)
 
         for tweet in tweets_data:
-            time.sleep(random.randint(55, 65))
             username = tweet[0]
             tweet_id = tweet[1]
             user_id = tweet[2]
@@ -140,7 +141,9 @@ class Twitter:
 
             self.submit()
 
-            time.sleep(10)
+            for _ in range(random.randint(55,65)):
+                time.sleep(1)
+
 
     def reply_to_keyword(self, keyword, n):
         self.search(keyword)
