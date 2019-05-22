@@ -33,3 +33,18 @@ class InstagramVariables:
     # Constants
     LOGIN_URL = 'https://instagram.com/accounts/login'
     SEARCH_URL = 'https://instagram.com/explore/tags/'
+
+class MeetupVariables:
+    # Account Details
+    USERNAME = "username"
+    PASSWORD = "password"
+
+    # CHANGE TO WHAT YOU WANT
+    MESSAGED_GROUPS = "data/meetup_messaged.txt"
+
+    # Result of this will be, "Hi {admin name}, hello there this is a message"
+    MESSAGE_TEXT = "hello there this is a message"
+
+    # Constants
+    LOGIN_URL = 'https://meetup.com/login'
+    SEARCH_URL = 'https://www.meetup.com/find/?allMeetups=false&radius=Infinity&sort=recommended&eventFilter=mysugg&keywords='
