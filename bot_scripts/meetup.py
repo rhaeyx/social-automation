@@ -45,6 +45,18 @@ class Meetup:
 
         # Submit
         password.send_keys(Keys.RETURN)
+        
+        if not self.logged_in():
+            print('[Meetup] ERROR: Log in failed, please login manually.')
+            input('[Meetup] Press enter to continue...')
+            print('[Meetup] Continuing now')
+
+    def logged_in(self):
+        try:
+            self.chrome.find_element_by_css_selector('span#headerAvatar')
+            return True
+        except:
+            return False
 
     def search(self, tag):
         print('[Meetup] Searching for ' + tag)
@@ -101,6 +113,23 @@ class Meetup:
     def add_to_messaged(self, group):
         with open(self.variables['MESSAGED_GROUPS'], 'a') as f:
             f.write('\n' + group)
+        
+    def join_group(self):
+        try:
+            join_btn = self.chrome.find_element_by_css_selector('a#actionButtonLink')            
+            join_btn.click()
+        except:
+            print('[Meetup] Already a member')
+            return
+        
+        time.sleep(5)
+
+        try:
+            self.chrome.find_element_by_css_selector('div.joinForm')
+            print('[Meetup] Fill up join form')
+            print('[Meetup] Enter to continue...')
+        except:
+            pass
 
     def message_groups(self, groups):
         print('[Meetup] Messaging group admins')
@@ -112,6 +141,8 @@ class Meetup:
 
             name = self.get_admin_name()
             message_link = self.get_message_link()
+
+            self.join_group()
 
             if self.already_messaged(group):
                 print('[Meetup] Already messaged this group')
