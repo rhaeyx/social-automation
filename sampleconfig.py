@@ -11,7 +11,10 @@ class TwitterVariables:
     PASSWORD = "password"
 
     # CHANGE TO WHAT YOU WANT
-    FOLLOWS_CSV = "twitter_followed.csv"
+    DO_NOT_MESSAGE = "data/twitter/do_not_message.txt"
+    MESSAGED_CSV = "data/twitter/twitter_messaged.csv"
+    REPLIED_CSV = "data/twitter/twitter_replied.csv"
+    FOLLOWS_CSV = "data/twitter/twitter_followed.csv"
     REPLY_TEXT = "hello there this is a reply"
     DM_TEXT = "hello there this is a dm"
 
@@ -26,8 +29,8 @@ class InstagramVariables:
     PASSWORD = "password"
 
     # CHANGE TO WHAT YOU WANT
-    REPLIED_TO = "instagram_replied.txt"
-    FOLLOWS_CSV = "instagram_followed.csv"
+    REPLIED_TO = "data/instagram/instagram_replied.txt"
+    FOLLOWS_CSV = "data/instagram/instagram_followed.csv"
     REPLY_TEXT = "hello there this is a reply"
 
     # Constants
@@ -40,7 +43,7 @@ class MeetupVariables:
     PASSWORD = "password"
 
     # CHANGE TO WHAT YOU WANT
-    MESSAGED_GROUPS = "data/meetup_messaged.txt"
+    MESSAGED_GROUPS = "data/meetup/meetup_messaged.txt"
 
     # Result of this will be, "Hi {admin name}, hello there this is a message"
     MESSAGE_TEXT = "hello there this is a message"
