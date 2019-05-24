@@ -29,9 +29,9 @@
 - Track status and time stamps of posts/messages
 
 ## Meetups
-- Join a relevant Meetup group
-- Direct message the page administrator to share more about the company/project  
+- Join a relevant Meetup group //
+- Direct message the page administrator to share more about the company/project //
 - Like a relevant Facebook page and direct message the page administrator 
-- Track status and time stamps of posts/messages
+- Track status and time stamps of posts/messages //
 
 ### [Video Example](https://www.loom.com/share/2712e7271b58473a8886aadbea5a79c4)
