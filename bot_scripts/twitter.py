@@ -99,13 +99,13 @@ class Twitter:
             lines = f.read().split('\n')
             for line in lines:
                 line = line.split(',')
-                if line[0] == user['username']:
+                if line[0].lower() == user['username'].lower():
                     return True
         
         with open(self.variables['DO_NOT_MESSAGE'], 'r') as f:
             lines = f.read().split('\n')
             for line in lines:
-                if line == user['username']:
+                if line.lower() == user['username'].lower():
                     return True
 
         return False
